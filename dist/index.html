@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Vardiya saatlerini ve tahmini kazancını hesapla.">
+  <title>Vardiya — Zamanın sende</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23c52b57'/%3E%3Cpath d='M8 9l8 15 8-15' fill='none' stroke='white' stroke-width='4'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header><a class="brand" href="./"><span class="mark">V</span> vardiya<span class="brand-dot">.</span></a><div class="header-actions"><span class="edition">KİŞİSEL ÇALIŞMA ALANIN</span><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Koyu temaya geç" title="Koyu temaya geç"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14A8.5 8.5 0 0 1 10 3.5 8.5 8.5 0 1 0 20.5 14Z"/></svg></button></div></header>
+  <main>
+    <section class="intro"><span class="eyebrow">DAHA PLANLI BİR GÜN</span><h1>Vardiya planım</h1><p>Vardiyanı planla, emeğinin karşılığını gör.</p></section>
+    <section class="weekly-section" aria-labelledby="weekly-title">
+      <div class="weekly-heading"><h2 id="weekly-title">Bu hafta</h2><span id="weekly-range"></span></div>
+      <div class="weekly-cards" aria-live="polite">
+        <div class="weekly-card"><span>Planlanan çalışma</span><strong id="weekly-hours">0 saat</strong></div>
+        <div class="weekly-card"><span>Tahmini kazanç</span><strong id="weekly-earnings">₺0,00</strong></div>
+        <div class="weekly-card"><span>Kalan vardiya</span><strong id="weekly-remaining">0</strong></div>
+      </div>
+      <p class="weekly-note">Pazartesi–pazar arasında başlayan vardiyalar. Devam eden vardiyalar kalan sayısına dahildir.</p>
+    </section>
+    <section class="workspace" aria-label="Vardiya hesaplayıcı">
+      <form id="shift-form" class="editor">
+        <div class="section-title"><span class="number">01</span><h2>Vardiyanı oluştur</h2></div>
+        <label for="shift-date">Vardiya tarihi</label><input id="shift-date" name="date" type="date" required>
+        <div class="time-fields"><div><label for="start-time">Başlangıç</label><input id="start-time" name="start" type="time" value="16:00" required></div><div><label for="end-time">Bitiş</label><input id="end-time" name="end" type="time" value="00:00" required></div></div>
+        <label for="hourly-rate">Saatlik ücret <span>₺ / saat</span></label><input id="hourly-rate" name="rate" type="number" min="0" max="1000000" step="0.01" value="150" required>
+        <p class="hint">Bitiş saati başlangıçtan erkense vardiya ertesi gün biter.</p>
+        <p id="error" role="alert"></p>
+        <button class="save-button" type="submit">Vardiyayı kaydet</button>
+        <p id="save-status" role="status" class="hint">Kayıtlar yalnızca bu tarayıcıda saklanır.</p>
+      </form>
+      <div class="preview" aria-live="polite" aria-atomic="true">
+        <div class="preview-top"><span>VARDİYA ÖZETİN</span><span class="pill" id="shift-type">Geceye uzanıyor</span></div>
+        <h2 id="date-label"></h2><p id="time-label" class="time-label"></p>
+        <div class="duration"><span id="hours">8</span><span>saat<br><small>çalışma süresi</small></span></div>
+        <div class="timeline"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="earnings"><span>Tahmini kazanç<strong id="earnings"></strong></span><span class="currency-symbol">₺</span></div>
+        <p class="preview-note">Mola ve kesintiler hesaba dahil değildir.</p>
+      </div>
+    </section>
+    <section class="calendar-section" aria-labelledby="calendar-title">
+      <div class="calendar-header"><div class="section-title"><span class="number">02</span><h2 id="calendar-title">Vardiya takvimim</h2></div><div class="month-controls"><button id="previous-month" type="button" aria-label="Önceki ay">‹</button><h3 id="month-label"></h3><button id="next-month" type="button" aria-label="Sonraki ay">›</button></div></div>
+      <p id="month-summary" class="hint"></p>
+      <div class="calendar-scroll"><div class="weekdays" aria-hidden="true"><span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span></div><div id="calendar-grid" class="calendar-grid"></div></div>
+      <p id="calendar-empty" class="hint"></p>
+      <div id="shift-list" class="shift-list"></div>
+    </section>
+    <section class="calendar-section" aria-labelledby="tasks-title">
+      <div class="section-title"><span class="number">03</span><h2 id="tasks-title">Günün yapılacakları</h2></div>
+      <form id="task-form" class="task-form">
+        <div><label for="task-date">Gün</label><input id="task-date" type="date" required></div>
+        <div class="task-text-field"><label for="task-text">Yapılacak iş</label><input id="task-text" type="text" maxlength="160" placeholder="Örneğin, gün sonu raporunu hazırla" required></div>
+        <button class="save-button" type="submit">Ekle</button>
+      </form>
+      <p id="task-status" class="hint" role="status"></p>
+      <div id="task-list" class="task-list"></div>
+    </section>
+    <footer><span>Küçük bir plan, daha rahat bir gün.</span><span>Vardiyaların, tek yerde.</span></footer>
+  </main>
+</body>
+</html>
